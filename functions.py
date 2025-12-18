@@ -115,13 +115,16 @@ def randomWalk(A, alpha, v, score_exact) :
     # Compteur de visites
     count=np.zeros(n) # crée un vecteur de longueur n remplies de 0
     
+    steps=1000000 # plus le nombre est grand plus le résultat est précis
+
     # Checkpoints pour calculer l'erreur
-    checkpoints = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
+    checkpoints = []
+    for k in range(20) :
+        checkpoints.append(k*steps//20)
+    checkpoints.append(steps)
     steps_list = []
     errors_list = []
-    
-    steps=1000000 # plus le nombre est grand plus le résultat est précis
-    
+        
     node=0
     count[node]+=1     
     
@@ -152,5 +155,5 @@ def randomWalk(A, alpha, v, score_exact) :
     plt.legend(fontsize=11)
     plt.tight_layout()
     plt.savefig('pagerank_error_convergence.png', dpi=300, bbox_inches='tight') #sauvegarde le graphique
-        
+    
     return scores #retourne le vecteur des scores d'importance

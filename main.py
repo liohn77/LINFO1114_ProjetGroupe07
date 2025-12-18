@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from functions import randomWalk, pageRankPower, pageRankLinear
 
 # charge les fichiers csv
