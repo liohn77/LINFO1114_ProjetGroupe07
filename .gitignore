@@ -1,8 +1,15 @@
-.venv/
-venv/
-env/
+# Matplotlib
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-.DS_Store
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv

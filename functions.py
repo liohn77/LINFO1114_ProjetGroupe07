@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def pageRankLinear(A: np.matrix, alpha: 0.9, v: np.array) -> np.array:
     """
@@ -91,7 +92,7 @@ def pageRankPower(A: np.matrix, alpha: float, v: np.array) -> np.array:
     return nouv_x.flatten() #retourne le vecteur PageRank en un tableau en une dimention(1D)
 
 
-def randomWalk(A, alpha, v) :
+def randomWalk(A, alpha, v, score_exact) :
     """
     en simulant une marche aléatoire de longueur fixée à 5 000 000 pas sur le graphe dirigé 
     et pondéré, chaque étape on choisit le noeud suivant selon les probabilités de transition 
@@ -114,7 +115,12 @@ def randomWalk(A, alpha, v) :
     # Compteur de visites
     count=np.zeros(n) # crée un vecteur de longueur n remplies de 0
     
-    steps=5000000 # plus le nombre est grand plus le résultat est précis
+    # Checkpoints pour calculer l'erreur
+    checkpoints = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
+    steps_list = []
+    errors_list = []
+    
+    steps=1000000 # plus le nombre est grand plus le résultat est précis
     
     node=0
     count[node]+=1     
@@ -125,7 +131,26 @@ def randomWalk(A, alpha, v) :
         next_node = np.random.choice(n,p=transition_probs) # choisit un index (0 à n-1) avec probabilités de transition_probs
         node=next_node
         count[node]+=1
+        
+        # Calculer erreur moyenne à chaque checkpoint
+        if (j+1) in checkpoints:
+            score_approx = count / (j+1)
+            erreur_moyenne = (1/n) * np.sum(np.abs(score_approx-score_exact))
+            steps_list.append(j+1)
+            errors_list.append(erreur_moyenne)
+            print(f"Après {j+1:>7} pas: ε(k) = {erreur_moyenne:.6f}")
     
     scores = count/steps
     
+    # Trace le graphique pour l'évolution de l'erreur moyenne
+    plt.figure(figsize=(12, 6))
+    plt.loglog(steps_list, errors_list, 'o-', linewidth=2.5, markersize=8, color='#e74c3c', label='ε(k)')
+    plt.xlabel('Nombre de pas (k)', fontsize=12, fontweight='bold')
+    plt.ylabel('Erreur moyenne ε(k)', fontsize=12, fontweight='bold')
+    plt.title('Évolution de l’erreur moyenne entre le score exact et le score approximé par la marche aléatoire en fonction du pas de temps k', fontsize=16, fontweight='bold')
+    plt.grid(True, alpha=0.3, which='both')
+    plt.legend(fontsize=11)
+    plt.tight_layout()
+    plt.savefig('pagerank_error_convergence.png', dpi=300, bbox_inches='tight') #sauvegarde le graphique
+        
     return scores #retourne le vecteur des scores d'importance
