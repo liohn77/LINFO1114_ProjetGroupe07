@@ -8,8 +8,7 @@ def randomWalk(A, alpha, v) :
     P=np.zeros((n,n)) # crée une matrice n*n remplies de 0
 
     for i in range(n) :
-        if col_sums[i]>0 :
-            P[:,i] = A[:,i]/col_sums[i]
+        P[:,i] = A[:,i]/col_sums[i] # je ne mets pas de condition comme A n'a pas de colonne nulle
     
     # Matrice Google
     G = alpha * P+(1-alpha) * np.outer(v,np.ones(n)) # produit extérieur de 2 vecteurs
