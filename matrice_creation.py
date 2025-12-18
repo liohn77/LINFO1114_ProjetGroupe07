@@ -1,13 +1,8 @@
 # Ce code DOIT être supprimé avant la soumission, il sert juste à créer ou re-créer la matrice d'adjacence
 
 import numpy as np
-
-# Définir l'ordre des noeuds
-nodes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-n = len(nodes)
-
 # Créer une matrice 10x10 remplie de zéros
-A = np.zeros((n, n))
+A = np.zeros((10,10))
 
 A[0][1] = 5    # A → B : 5
 A[0][7] = 3    # A → H : 3
