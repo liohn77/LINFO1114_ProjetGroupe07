@@ -93,7 +93,7 @@ def pageRankPower(A: np.matrix, alpha: float, v: np.array) -> np.array:
 
 def randomWalk(A, alpha, v) :
     """
-    en simulant une marche aléatoire de longueur fixée à 1 000 000 de pas sur le graphe dirigé 
+    en simulant une marche aléatoire de longueur fixée à 1 000 000 pas sur le graphe dirigé 
     et pondéré, chaque étape on choisit le noeud suivant selon les probabilités de transition 
     définies par la matrice Google. Le score PageRank approximatif de chaque noeud est alors 
     obtenu en comptant la fréquence relative de visite de chaque page au cours de la marche
@@ -109,7 +109,7 @@ def randomWalk(A, alpha, v) :
         P[:,i] = A[:,i]/col_sums[i] # je ne mets pas de condition comme A n'a pas de colonne nulle
     
     # Matrice Google
-    G = alpha * P+(1-alpha) * np.outer(v,np.ones(n)) # matrice  de transiton
+    G = alpha * P+(1-alpha) * np.outer(v,np.ones(n)) # pas de condition pour une colonne nulle car A n'est pas nulle
     
     # Compteur de visites
     count=np.zeros(n) # crée un vecteur de longueur n remplies de 0
