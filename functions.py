@@ -54,7 +54,7 @@ def pageRankPower(A: np.matrix, alpha: float, v: np.array) -> np.array:
 
     e = np.ones((n, 1)) #e = nx1 avec que des 1
     v = v.reshape((n, 1)) #v = nx1 --> des multiplications  plus tard
-    G = alpha * P + (1 - alpha) * (e @ v.T) #Martice Google
+    G = alpha * P + (1 - alpha) * (v @ e.T) #Martice Google
 
     # Ici on veut créer le vecteur de départ x pour la power methofd
     x = np.sum(A, axis=0).astype(float)
@@ -62,18 +62,18 @@ def pageRankPower(A: np.matrix, alpha: float, v: np.array) -> np.array:
     x = x.reshape((n, 1))
 
 
-    itérations_maximales= 1000 #j'ai mis cette limite d'itération pour  pas avoir de boucles infinies
+    iterations_maximales= 500000000 #j'ai mis cette limite d'itération pour  pas avoir de boucles infinies
 
 
-    mini = 1e-15 #j'ai mis ça pour pouvoir arreter si lla  différence devient trop petite
+    mini = 1e-12 #j'ai mis ça pour pouvoir arreter si lla  différence devient trop petite
 
     #on affiche les différentes matrices (demandé)
     print("Matrice d'adjacence A:\n", A)
     print("Matrice de transition P:\n", P)
     print("Matrice Google G:\n", G)
 
-    for k in range(itérations_maximales):
-        nouv_x = G.T @ x # nouv_x[k+1] = G^T · nouv_x[k]
+    for k in range(iterations_maximales):
+        nouv_x = G @ x # nouv_x[k+1] = G · nouv_x[k]
         nouv_x = nouv_x / np.sum(nouv_x) #on noramlise
 
         if k < 3: #affiche les trois premières itérations de la power method (consignes)
@@ -93,7 +93,7 @@ def pageRankPower(A: np.matrix, alpha: float, v: np.array) -> np.array:
 
 def randomWalk(A, alpha, v) :
     """
-    en simulant une marche aléatoire de longueur fixée à 1 000 000 pas sur le graphe dirigé 
+    en simulant une marche aléatoire de longueur fixée à 5 000 000 pas sur le graphe dirigé 
     et pondéré, chaque étape on choisit le noeud suivant selon les probabilités de transition 
     définies par la matrice Google. Le score PageRank approximatif de chaque noeud est alors 
     obtenu en comptant la fréquence relative de visite de chaque page au cours de la marche
@@ -114,7 +114,7 @@ def randomWalk(A, alpha, v) :
     # Compteur de visites
     count=np.zeros(n) # crée un vecteur de longueur n remplies de 0
     
-    steps=1000000 # plus le nombre est grand plus le résultat est précis
+    steps=5000000 # plus le nombre est grand plus le résultat est précis
     
     node=0
     count[node]+=1     
