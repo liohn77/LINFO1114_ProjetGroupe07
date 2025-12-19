@@ -92,7 +92,7 @@ def pageRankPower(A: np.matrix, alpha: float, v: np.array) -> np.array:
     return nouv_x.flatten() #retourne le vecteur PageRank en un tableau en une dimention(1D)
 
 
-def randomWalk(A, alpha, v, score_exact) :
+def randomWalk(A, alpha, v) :
     """
     en simulant une marche aléatoire de longueur fixée à 5 000 000 pas sur le graphe dirigé 
     et pondéré, chaque étape on choisit le noeud suivant selon les probabilités de transition 
@@ -101,6 +101,10 @@ def randomWalk(A, alpha, v, score_exact) :
     aléatoire.
     """
     n = A.shape[0]
+
+    # Vecteur des scores exacts (pour alpha=0.9) pour le calcul de l'erreur moyenne
+    score_exact = np.array([0.06613036,0.09504818,0.11723597,0.13065298,0.14513379,0.10801892,0.07340477,0.02547551,0.11234878,0.12655074])
+
     
     # Matrice de probabilités de transition P
     col_sums=np.sum(A,axis=0) # somme des colonnes de A
