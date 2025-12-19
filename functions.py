@@ -153,7 +153,7 @@ def randomWalk(A, alpha, v) :
     
     steps=1000000 # plus le nombre est grand plus le résultat est précis
 
-    # Checkpoints pour calculer l'erreur
+    # Checkpoints pour calculer l'erreur moyenne (pour le graphe)
     checkpoints = []
     for k in range(20) :
         checkpoints.append(k*steps//20)
@@ -171,7 +171,7 @@ def randomWalk(A, alpha, v) :
         node=next_node
         count[node]+=1
         
-        # Calculer erreur moyenne à chaque checkpoint
+        # Calcule l'erreur moyenne à chaque checkpoint
         if (j+1) in checkpoints:
             score_approx = count / (j+1)
             erreur_moyenne = (1/n) * np.sum(np.abs(score_approx-score_exact))
