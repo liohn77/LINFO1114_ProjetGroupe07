@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def pageRankLinear(A: np.matrix, alpha: 0.9, v: np.array) -> np.array:
+def pageRankLinear(A: np.matrix, alpha: float, v: np.array) -> np.array:
     """
     Calcule le PageRank d'un graphe à partir de sa matrice d'adjacence A,
     avec facteur de téléportation alpha et vecteur de personnalisation v.
@@ -16,24 +16,56 @@ def pageRankLinear(A: np.matrix, alpha: 0.9, v: np.array) -> np.array:
     """
 
     
+   # Taille de la matrice carrée A
     n = A.shape[0]
-    
-    # Step 1: build transition probability matrix P
-    P = np.array(A, dtype=float)
-    col_sums = P.sum(axis=0)
-    
-    # Step 2: normalize columns (stochastic matrix)
+
+
+    # Etape 1 : Construction de la matrice de transition P
+
+    P = np.array(A, dtype=float)   # Copie de la matrice d'adjacence A
+    col_sums = P.sum(axis=0)       # Somme de chaque colonne de P
+
+
+    # etape 2 : Normalisation des colonnes de P (matrice scohastique)
+
     for j in range(n):
         if col_sums[j] != 0:
+            # Si le noeud a des liens sortants on divise chaque valeur par la somme des liens
             P[:, j] /= col_sums[j]
         else:
-            P[:, j] = 1.0 / n  # handle dangling nodes
-    
-    # Step 3: solve linear system (I - alpha * P)x = (1 - alpha)v
-    I = np.eye(n)
-    b = (1 - alpha) * v
-    x = np.linalg.solve(I - alpha * P, b)
-    
+            # si le noeud n'a pas de liens sortants on fait 1/n
+
+            P[:, j] = 1.0 / n
+
+
+    # etape 3 : Résolution du système linéaire pour obtenir le vecteur PageRank
+
+    if alpha < 1:
+        # cas général avec téléportation (0 < alpha < 1)
+        # Résolution de (I - alpha * P) x = (1 - alpha) * v
+
+        I = np.eye(n)                # matrice identité de taille n
+        b = (1 - alpha) * v          # Côté droit du système linéaire
+        x = np.linalg.solve(I - alpha * P, b)  # résolution du système linéaire
+        # retourne le vecteur PageRank
+
+    else:
+        # cas particulier sans téléportation (alpha = 1) ((I - P)Tx = 0 avec eTx = 1)
+        # résolution de (I - P)x = 0 avec la contrainte sum(x) = 1
+
+        M = np.eye(n) - P            # matrice (I - P)
+        b = np.zeros(n)              # côté droit initialisé à zéro
+
+        # remplacer la dernière ligne pour imposer la contrainte sum(x) = 1
+        # correspond à eTx = 1
+        M[-1, :] = 1.0
+        b[-1] = 1.0
+
+        # résolution du système linéaire modifié
+        # On utilise np.linalg.solve pour résoudre le système linéaire
+        x = np.linalg.solve(M, b)
+
+    # retourne le vecteur PageRank
     return x
 
 
@@ -145,7 +177,6 @@ def randomWalk(A, alpha, v) :
             erreur_moyenne = (1/n) * np.sum(np.abs(score_approx-score_exact))
             steps_list.append(j+1)
             errors_list.append(erreur_moyenne)
-            print(f"Après {j+1:>7} pas: ε(k) = {erreur_moyenne:.6f}")
     
     scores = count/steps
     
@@ -154,7 +185,6 @@ def randomWalk(A, alpha, v) :
     plt.loglog(steps_list, errors_list, 'o-', linewidth=2.5, markersize=8, color='#e74c3c', label='ε(k)')
     plt.xlabel('Nombre de pas (k)', fontsize=12, fontweight='bold')
     plt.ylabel('Erreur moyenne ε(k)', fontsize=12, fontweight='bold')
-    plt.title('Évolution de l’erreur moyenne entre le score exact et le score approximé par la marche aléatoire en fonction du pas de temps k', fontsize=16, fontweight='bold')
     plt.grid(True, alpha=0.3, which='both')
     plt.legend(fontsize=11)
     plt.tight_layout()
